@@ -1,6 +1,6 @@
-CREATE DATABASE portfolioproject;
+CREATE DATABASE IF NOT EXISTS portfolioproject;
 
-CREATE TABLE `worldlifeexpectancy` (
+CREATE TABLE IF NOT EXISTS `worldlifeexpectancy` (
   `Country` VARCHAR(1024),
   `Year` BIGINT,
   `Status` VARCHAR(1024),
