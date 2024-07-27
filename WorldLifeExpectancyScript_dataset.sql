@@ -1,5 +1,3 @@
-# PART 1: CREAT DATABASE, CREATE TABLE AND INSERT DATA
-
 CREATE DATABASE portfolioproject;
 
 CREATE TABLE `worldlifeexpectancy` (
