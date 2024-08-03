@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/0c6cc3bd-1082-452e-b032-3685bd226932)# SQL Portfolio Project: Data Cleaning & Data Exploration (Using MySQL)
+# SQL Portfolio Project: Data Cleaning & Data Exploration (Using MySQL)
 
 Credit to: Self-study Data Discord Group for Dataset provider
 
