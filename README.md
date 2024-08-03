@@ -1,4 +1,4 @@
-# SQL Portfolio Project: Data Cleaning & Data Exploration (Using MySQL)
+![image](https://github.com/user-attachments/assets/0c6cc3bd-1082-452e-b032-3685bd226932)# SQL Portfolio Project: Data Cleaning & Data Exploration (Using MySQL)
 
 Credit to: Self-study Data Discord Group for Dataset provider
 
@@ -70,20 +70,20 @@ Query to determine the relationship between Schooling and Lifeexpectancy. Find c
 **8. BMI Trends:**
 Query to find the average BMI trend over the years for a particular country.
 
-**9. Under-five Mortality:**
-Query to analyze the trend of under-fivedeaths over the years for a specific country.
+**9. Infant Mortality:**
+Query to find the average number of infantdeaths and under-fivedeaths for countries with the highest and lowest life expectancies.
 
-**10. Gender-based Mortality:**
-Query to compare AdultMortality rates between genders for each country.
+**10. Rolling Average of Adult Mortality:**
+Query to calculate the rolling average of AdultMortality over a 5-year window for each country. This will help in understanding the trend and smoothing out short-term fluctuations.
 
-**11. HIV/AIDS Impact:**
-Query to find the correlation between the prevalence of HIVAIDS and Lifeexpectancy.
+**11. Impact of Healthcare Expenditure:**
+Query to find the correlation between percentageexpenditure (healthcare expenditure) and Lifeexpectancy. Higher healthcare spending might correlate with higher life expectancy.
 
-**12. Economic vs. Health Expenditure:**
-Query to analyze the relationship between GDP and percentageexpenditure on healthcare.
+**12. BMI and Health Indicators:**
+Query to find the correlation between BMI and other health indicators like Lifeexpectancy and AdultMortality. Analyze the impact of BMI on overall health.
 
-**13. Infant Mortality and Healthcare:**
-Query to determine the impact of healthcare expenditure (percentageexpenditure) on infantdeaths.
+**13. GDP and Health Outcomes:**
+Query to analyze how GDP influences health outcomes such as Lifeexpectancy, AdultMortality, and infantdeaths. Compare high GDP and low GDP countries.
 
-**14. Diphtheria and Polio Impact:**
-Query to compare the impact of Diphtheria and Polio on Lifeexpectancy.
+**14. Subgroup Analysis of Life Expectancy:**
+Query to find the average Lifeexpectancy for specific subgroups, such as countries in different continents or regions. This can help in identifying regional health disparities.
