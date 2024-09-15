@@ -230,8 +230,6 @@ WHERE avg_lifeexpectancy = (SELECT MAX(avg_lifeexpectancy) FROM avg_table)
 
 ## 10. Rolling Average of Adult Mortality: Query to calculate the rolling average of AdultMortality over a 5-year window for each country. This will help in understanding the trend and smoothing out short-term fluctuations.
 
-
-
 ## 11. Impact of Healthcare Expenditure: Query to find the correlation between percentageexpenditure (healthcare expenditure) and Lifeexpectancy. Higher healthcare spending might correlate with higher life expectancy.
 
 SELECT (COUNT(*) * SUM(xy) - SUM(x) * SUM(y)) / (SQRT((COUNT(*) * SUM(xx) - SUM(x) * SUM(x)) * (COUNT(*) * SUM(yy) - SUM(y) * SUM(y)))) AS correlation
@@ -291,11 +289,76 @@ WITH avg_table AS (
         , AVG(infantdeaths) AS avg_infantdeaths
 	FROM worldlifeexpectancy
 	GROUP BY Country
+    HAVING avg_gdp <> 0 -- có một số nước thiếu data về GDP nên để phân tích khách quan hơn lúc phân tích sẽ loại bỏ các nước đó đi
 )
+, gdp_table AS (
 SELECT *
+	, CASE 
+		WHEN avg_gdp < 10000 THEN 'low'
+		WHEN avg_gdp >= 10000 AND avg_gdp < 30000 THEN 'medium'
+		ELSE 'high'
+	END AS gdp_labled
 FROM avg_table
-WHERE avg_schooling = (SELECT MAX(avg_schooling) FROM avg_table)
-	OR avg_schooling = (SELECT MIN(avg_schooling) FROM avg_table);
+)
+SELECT gdp_labled
+	, AVG (avg_lifeexpectancy)
+    , AVG(avg_adultmortality)
+    , AVG(avg_infantdeaths)
+FROM gdp_table
+GROUP BY gdp_labled;
+
+-- Ở các nước có GDP thấp < 10000, số ca tử vong ở cả người lớn và trẻ em cao hơn hẳn so với các nước có GDP ở mức trung bình và cao. 
 
 ## 14. Subgroup Analysis of Life Expectancy: Query to find the average Lifeexpectancy for specific subgroups, such as countries in different continents or regions. This can help in identifying regional health disparities.
 
+WITH region_table AS (
+	SELECT *
+	  , CASE
+		-- Châu Á
+		WHEN Country IN ('Afghanistan', 'Armenia', 'Azerbaijan', 'Bangladesh', 'Bhutan', 'Brunei Darussalam', 'Cambodia', 
+						 'China', 'Democratic People\'s Republic of Korea', 'India', 'Indonesia', 'Islamic Republic of Iran', 
+						 'Iraq', 'Israel', 'Japan', 'Jordan', 'Kazakhstan', 'Kuwait', 'Kyrgyzstan', 'Lao People\'s Democratic Republic', 
+						 'Lebanon', 'Malaysia', 'Maldives', 'Mongolia', 'Myanmar', 'Nepal', 'Oman', 'Pakistan', 'Philippines', 
+						 'Qatar', 'Republic of Korea', 'Saudi Arabia', 'Singapore', 'Sri Lanka', 'Syrian Arab Republic', 
+						 'Tajikistan', 'Thailand', 'Timor-Leste', 'Turkmenistan', 'United Arab Emirates', 'Uzbekistan', 'Viet Nam', 'Yemen', 'Georgia', 'Turkey') THEN 'Asia'
+		
+		-- Châu Âu
+		WHEN Country IN ('Albania', 'Armenia', 'Austria', 'Belarus', 'Belgium', 'Bosnia and Herzegovina', 'Bulgaria', 
+						 'Croatia', 'Cyprus', 'Czechia', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 
+						 'Iceland', 'Ireland', 'Italy', 'Kazakhstan', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 
+						 'Montenegro', 'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal', 'Romania', 
+						 'Russian Federation', 'Serbia', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Ukraine', 'United Kingdom of Great Britain and Northern Ireland', 'Republic of Moldova', 'The former Yugoslav republic of Macedonia') THEN 'Europe'
+
+		-- Châu Phi
+		WHEN Country IN ('Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cameroon', 
+						 'Central African Republic', 'Chad', 'Comoros', 'Congo', 'Democratic Republic of the Congo', 'Djibouti', 
+						 'Egypt', 'Equatorial Guinea', 'Eritrea', 'Eswatini', 'Ethiopia', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 
+						 'Guinea-Bissau', 'Ivory Coast', 'Kenya', 'Lesotho', 'Liberia', 'Libya', 'Madagascar', 'Malawi', 'Mali', 
+						 'Mauritania', 'Mauritius', 'Morocco', 'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Rwanda', 'Sao Tome and Principe', 
+						 'Senegal', 'Seychelles', 'Sierra Leone', 'Somalia', 'South Africa', 'South Sudan', 'Sudan', 'Togo', 'Uganda', 
+						 'United Republic of Tanzania', 'Zambia', 'Zimbabwe', 'Côte d\'Ivoire', 'Swaziland', 'Tunisia') THEN 'Africa'
+		
+		-- Châu Mỹ (Bắc Mỹ và Nam Mỹ)
+		WHEN Country IN ('Antigua and Barbuda', 'Argentina', 'Bahamas', 'Barbados', 'Belize', 'Bolivia', 'Brazil', 'Canada', 
+						 'Chile', 'Colombia', 'Costa Rica', 'Cuba', 'Dominican Republic', 'Ecuador', 'El Salvador', 'Grenada', 
+						 'Guatemala', 'Guyana', 'Haiti', 'Honduras', 'Jamaica', 'Mexico', 'Nicaragua', 'Panama', 'Paraguay', 
+						 'Peru', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Suriname', 'Trinidad and Tobago', 
+						 'United States of America', 'Uruguay', 'Venezuela', 'Plurinational State of Bolivia') THEN 'Americas'
+		
+		-- Châu Đại Dương
+		WHEN Country IN ('Australia', 'Fiji', 'Kiribati', 'Micronesia', 'Nauru', 'New Zealand', 
+						 'Palau', 'Papua New Guinea', 'Samoa', 'Solomon Islands', 'Tonga', 'Tuvalu', 'Vanuatu', 'Federated States of Micronesia') THEN 'Oceania'
+		
+		-- Trung Đông (nếu muốn tách riêng khu vực này)
+		WHEN Country IN ('Bahrain', 'Iraq', 'Israel', 'Jordan', 'Kuwait', 'Lebanon', 'Oman', 'Qatar', 'Saudi Arabia', 
+						 'Syrian Arab Republic', 'United Arab Emirates', 'Yemen') THEN 'Middle East'
+
+	  END AS Region
+	FROM worldlifeexpectancy
+)
+SELECT Region
+	, AVG(Lifeexpectancy)
+FROM region_table
+GROUP BY Region;
+
+-- Tuổi thọ trung bình ở Châu Phi (Africa) là thấp nhất - 58.61 > còn lại đều trên 70 (Europe là cao nhất 77.4
